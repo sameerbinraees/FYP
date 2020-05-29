@@ -8,11 +8,12 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import LoginScreen from './screens/Login'
-import SignupScreen from './screens/Signup'
+import SignupScreenCustomer from './screens/SignupCustomer'
+import SignupScreenVendor from './screens/SignupVendor'
 import HomeScreen from './screens/Home'
 import Header from './screens/Header'
 import comp from './screens/mycomponent'
-//import Test from './screens/Test'
+import LoadingScreen from './screens/LoadingScreen'
 import QRGen from './screens/QRGen'
 import QRScan from './screens/QRScan'
 import Transactions from './screens/Transactions'
@@ -28,7 +29,7 @@ const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 const Tab = createBottomTabNavigator();
 
-const HomeIcon = <AntIcon name="qrcode" color="#1e6262" size={70} style={{}}/>
+const HomeIcon = <AntIcon name="qrcode" color="#1e6262" size={70} style={{}} />
 
 function Root() {
   return (
@@ -43,9 +44,9 @@ function Root() {
             : 'ios-home';
         } else if (route.name === 'Help/FAQs') {
           iconName = focused ? 'md-help-circle' : 'md-help-circle-outline';
-        }  else if (route.name === 'Settings') {
+        } else if (route.name === 'Settings') {
           iconName = focused ? 'md-settings' : 'md-settings';
-        }  
+        }
 
         // You can return any component that you like here!
         return <Ionicons name={iconName} size={size} color={color} />;
@@ -80,37 +81,37 @@ function Draw() {
 
       }}
       screenOptions={({ route }) => ({
-      drawerIcon: ({ focused, color, size }) => {
-        let iconName;
+        drawerIcon: ({ focused, color, size }) => {
+          let iconName;
 
-        if (route.name === 'Home') {
-          iconName = focused
-            ? 'ios-home'
-            : 'ios-home';
-        } else if (route.name === 'Promotions') {
-          iconName = focused ? 'ios-ribbon' : 'ios-ribbon';
-        } else if (route.name === 'Edit Profile') {
-          iconName = focused ? 'md-contact' : 'md-contact';
-        } else if (route.name === 'FAQs') {
-          iconName = focused ? 'md-help-circle' : 'md-help-circle-outline';
-        } else if (route.name === 'Contact') {
-          iconName = focused ? 'md-call' : 'md-call';
-        } else if (route.name === 'About') {
-          iconName = focused ? 'md-information-circle-outline' : 'md-information-circle-outline';
-        } else if (route.name === 'Help') {
-          iconName = focused ? 'ios-help-buoy' : 'ios-help-buoy';
-        }  else if (route.name === 'Invite a Friend') {
-          iconName = focused ? 'ios-add-circle' : 'ios-add-circle';
-        }  else if (route.name === 'Settings') {
-          iconName = focused ? 'md-settings' : 'md-settings';
-        }       
+          if (route.name === 'Home') {
+            iconName = focused
+              ? 'ios-home'
+              : 'ios-home';
+          } else if (route.name === 'Promotions') {
+            iconName = focused ? 'ios-ribbon' : 'ios-ribbon';
+          } else if (route.name === 'Edit Profile') {
+            iconName = focused ? 'md-contact' : 'md-contact';
+          } else if (route.name === 'FAQs') {
+            iconName = focused ? 'md-help-circle' : 'md-help-circle-outline';
+          } else if (route.name === 'Contact') {
+            iconName = focused ? 'md-call' : 'md-call';
+          } else if (route.name === 'About') {
+            iconName = focused ? 'md-information-circle-outline' : 'md-information-circle-outline';
+          } else if (route.name === 'Help') {
+            iconName = focused ? 'ios-help-buoy' : 'ios-help-buoy';
+          } else if (route.name === 'Invite a Friend') {
+            iconName = focused ? 'ios-add-circle' : 'ios-add-circle';
+          } else if (route.name === 'Settings') {
+            iconName = focused ? 'md-settings' : 'md-settings';
+          }
 
 
-        // You can return any component that you like here!
-        return <Ionicons name={iconName} size={size} color={color} />;
-      },
-    })}>
-      <Drawer.Screen name="Home" component={Root}/>
+          // You can return any component that you like here!
+          return <Ionicons name={iconName} size={size} color={color} />;
+        },
+      })}>
+      <Drawer.Screen name="Home" component={Root} />
       <Drawer.Screen name="Promotions" component={Promotions} />
       <Drawer.Screen name="Edit Profile" component={Profile} />
       <Drawer.Screen name="FAQs" component={FAQs} />
@@ -133,8 +134,10 @@ export default function App() {
   return (
     <NavigationNativeContainer>
       <Stack.Navigator headerMode="none">
+        <Stack.Screen name="Loading" component={LoadingScreen} />
         <Stack.Screen name="Login" component={LoginScreen} />
-        <Stack.Screen name="Signup" component={SignupScreen} />
+        <Stack.Screen name="SignupCustomer" component={SignupScreenCustomer} />
+        <Stack.Screen name="SignupVendor" component={SignupScreenVendor} />
         <Stack.Screen name="Home" component={Draw} />
         <Stack.Screen name="Profile" component={Profile} />
         <Stack.Screen name="QRGen" component={QRGen} />
