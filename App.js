@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState, useMemo } from "react";
 import { StyleSheet, Text, View, TouchableOpacity, ImageBackground, KeyboardAvoidingView, ScrollView } from 'react-native';
 import { Appbar, Button, BottomNavigation, TextInput } from 'react-native-paper';
 
@@ -21,9 +21,9 @@ import FAQs from './screens/FAQs'
 import Promotions from './screens/Promotions'
 import Profile from './screens/Profile'
 import AntIcon from "react-native-vector-icons/AntDesign";
-
-
 import { Ionicons } from '@expo/vector-icons';
+
+import { UserContext } from "./UserContext";
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -32,6 +32,8 @@ const Tab = createBottomTabNavigator();
 const HomeIcon = <AntIcon name="qrcode" color="#1e6262" size={70} style={{}} />
 
 function Root() {
+
+
   return (
 
     <Tab.Navigator screenOptions={({ route }) => ({
@@ -90,7 +92,7 @@ function Draw() {
               : 'ios-home';
           } else if (route.name === 'Promotions') {
             iconName = focused ? 'ios-ribbon' : 'ios-ribbon';
-          } else if (route.name === 'Edit Profile') {
+          } else if (route.name === 'View Profile') {
             iconName = focused ? 'md-contact' : 'md-contact';
           } else if (route.name === 'FAQs') {
             iconName = focused ? 'md-help-circle' : 'md-help-circle-outline';
@@ -113,7 +115,7 @@ function Draw() {
       })}>
       <Drawer.Screen name="Home" component={Root} />
       <Drawer.Screen name="Promotions" component={Promotions} />
-      <Drawer.Screen name="Edit Profile" component={Profile} />
+      <Drawer.Screen name="View Profile" component={Profile} />
       <Drawer.Screen name="FAQs" component={FAQs} />
       <Drawer.Screen name="Help" component={FAQs} />
       <Drawer.Screen name="About" component={FAQs} />
@@ -131,20 +133,25 @@ function Draw() {
 
 export default function App() {
 
+  const [user, setUser] = useState(null);
+  const value = useMemo(() => ({ user, setUser }), [user, setUser]);
+
   return (
-    <NavigationNativeContainer>
-      <Stack.Navigator headerMode="none">
-        <Stack.Screen name="Loading" component={LoadingScreen} />
-        <Stack.Screen name="Login" component={LoginScreen} />
-        <Stack.Screen name="SignupCustomer" component={SignupScreenCustomer} />
-        <Stack.Screen name="SignupVendor" component={SignupScreenVendor} />
-        <Stack.Screen name="Home" component={Draw} />
-        <Stack.Screen name="Profile" component={Profile} />
-        <Stack.Screen name="QRGen" component={QRGen} />
-        <Stack.Screen name="QRScan" component={QRScan} />
-        <Stack.Screen name="Transactions" component={Transactions} />
-      </Stack.Navigator>
-    </NavigationNativeContainer>
+    <UserContext.Provider value={value}>
+      <NavigationNativeContainer>
+        <Stack.Navigator headerMode="none">
+          <Stack.Screen name="Loading" component={LoadingScreen} />
+          <Stack.Screen name="Login" component={LoginScreen} />
+          <Stack.Screen name="SignupCustomer" component={SignupScreenCustomer} />
+          <Stack.Screen name="SignupVendor" component={SignupScreenVendor} />
+          <Stack.Screen name="Home" component={Draw} />
+          <Stack.Screen name="Profile" component={Profile} />
+          <Stack.Screen name="QRGen" component={QRGen} />
+          <Stack.Screen name="QRScan" component={QRScan} />
+          <Stack.Screen name="Transactions" component={Transactions} />
+        </Stack.Navigator>
+      </NavigationNativeContainer>
+    </UserContext.Provider>
   );
 }
 

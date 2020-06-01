@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, ImageBackground, Alert, AsyncStorage, } from 'react-native';
-import { Appbar, Button, BottomNavigation, TextInput, RadioButton } from 'react-native-paper';
+import { StyleSheet, Text, View, TouchableOpacity, ImageBackground, Alert, AsyncStorage, Image, } from 'react-native';
+import { Appbar, Button, ActivityIndicator, TextInput, RadioButton } from 'react-native-paper';
 
 export default function Login(props) {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [type, setType] = useState('');
-  const [error, setError] = useState('');
+  const [error, setError] = useState(false);
+  const [clicked, setClicked] = useState(false);
 
   const createAlert = (err) =>
     Alert.alert(
@@ -22,16 +23,20 @@ export default function Login(props) {
   function sendCredentials() {
     if (!email) {
       createAlert("Email is required")
+      setError(true)
     }
     else if (!password) {
       createAlert("Password is required")
+      setError(true)
     }
     else if (!type) {
       createAlert("Select account type, Customer or Vendor")
+      setError(true)
     }
 
     else {
-      fetch("http://192.168.1.15:3000/" + type + "s/login", {
+      setClicked(true)
+      fetch("http://192.168.43.145:3000/" + type + "s/login", {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -46,18 +51,24 @@ export default function Login(props) {
           //console.log(data)
           try {
             if (data.Error) {
-              setError(data.Error);
+              setError(true)
               Alert.alert(
                 "Email or Password is incorrect"
               )
             }
             else if (!data.Error) {
-              setError('');
+              //setError(false)
+              AsyncStorage.setItem('token', data.token).then(() => {
+                AsyncStorage.setItem('type', type).then(() => {
+                  //console.log(type)
+
+                  props.navigation.replace('Home');
+                })
+              });
             }
-            await AsyncStorage.setItem("token", data.token);
-            //console.log(data.token)
-            await AsyncStorage.setItem("type", type);
-            props.navigation.replace('Home');
+
+
+            //await AsyncStorage.setItem("type", type);
           } catch (e) {
             console.log("Error: ", e)
           }
@@ -77,78 +88,94 @@ export default function Login(props) {
 
         </Appbar.Header>
 
-        <View style={{
-          borderRadius: 40,
-          backgroundColor: "#ededed",
-          margin: "10%",
-          marginTop: "18%"
-        }}>
+        {(clicked && !error)
+          ?
+          <View style={styles.container}>
+            <Image
+              style={{
+                width: "100%",
+                height: 120,
+              }}
+              source={require('../assets/tax.png')}
+            />
+            <ActivityIndicator size="large" color="#1e6262" />
+            <Text style={{ marginTop: 20 }}>Fetching your data</Text>
+          </View>
+          :
+          <View style={{
+            borderRadius: 40,
+            backgroundColor: "#ededed",
+            margin: "10%",
+            marginTop: "18%"
+          }}>
 
-          <Text style={{ fontSize: 30, textAlign: "center", marginTop: "15%", marginBottom: "6%", color: "#1e6262" }}>
-            Login  Account
-            </Text>
+            <Text style={{ fontSize: 30, textAlign: "center", marginTop: "15%", marginBottom: "6%", color: "#1e6262" }}>
+              Login  Account
+          </Text>
 
-          <TextInput
-            style={styles.textInput}
-            label='Email'
-            underlineColor="transparent"
-            placeholder="Enter your Email"
-            theme={{ colors: { primary: "#1e6262" } }}
-            value={email}
-            onChangeText={text => setEmail(text)}
+            <TextInput
+              style={styles.textInput}
+              label='Email'
+              underlineColor="transparent"
+              placeholder="Enter your Email"
+              theme={{ colors: { primary: "#1e6262" } }}
+              value={email}
+              onChangeText={text => setEmail(text)}
 
-          />
+            />
 
-          <TextInput
-            style={styles.textInput}
-            label='Password'
-            underlineColor="transparent"
-            placeholder="Enter your Password"
-            secureTextEntry={true}
-            theme={{ colors: { primary: "#1e6262" } }}
-            value={password}
-            onChangeText={text => setPassword(text)}
-          />
+            <TextInput
+              style={styles.textInput}
+              label='Password'
+              underlineColor="transparent"
+              placeholder="Enter your Password"
+              secureTextEntry={true}
+              theme={{ colors: { primary: "#1e6262" } }}
+              value={password}
+              onChangeText={text => setPassword(text)}
+            />
 
-          <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginBottom: "6%" }}>
-            <RadioButton.Group
-              onValueChange={value => setType(value)}
-              value={type}
-            >
-              <View>
-                <Text style={{ fontWeight: "bold" }}>Customer</Text>
-                <RadioButton
-                  value="customer"
-                  color="#1e6262"
-                />
-              </View>
-              <View>
-                <Text style={{ fontWeight: "bold" }}>Vendor</Text>
-                <RadioButton
-                  value="vendor"
-                  color="#1e6262"
-                />
-              </View>
-            </RadioButton.Group>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginBottom: "6%" }}>
+              <RadioButton.Group
+                onValueChange={value => setType(value)}
+                value={type}
+              >
+                <View>
+                  <Text style={{ fontWeight: "bold" }}>Customer</Text>
+                  <RadioButton
+                    value="customer"
+                    color="#1e6262"
+                  />
+                </View>
+                <View>
+                  <Text style={{ fontWeight: "bold" }}>Vendor</Text>
+                  <RadioButton
+                    value="vendor"
+                    color="#1e6262"
+                  />
+                </View>
+              </RadioButton.Group>
+            </View>
+
+            <Button style={styles.button}
+              onPress={sendCredentials/*props.navigation.navigate("Home")*/}
+              mode="contained">
+              LogIn
+          </Button>
+
+            <Text style={{ fontSize: 20, textAlign: "center", marginTop: 30, color: "grey" }}
+            >Don't have an account?</Text>
+            <TouchableOpacity>
+              <Text style={{ fontSize: 20, textAlign: "center", marginTop: 10, marginBottom: 50, color: "grey", fontWeight: 'bold' }}
+                onPress={() => props.navigation.navigate("SignupCustomer")}
+              >Sign Up</Text>
+            </TouchableOpacity>
+
           </View>
 
-          <Button style={styles.button}
-            onPress={sendCredentials/*props.navigation.navigate("Home")*/}
-            mode="contained">
-            LogIn
-            </Button>
-
-          <Text style={{ fontSize: 20, textAlign: "center", marginTop: 30, color: "grey" }}
-          >Don't have an account?</Text>
-          <TouchableOpacity>
-            <Text style={{ fontSize: 20, textAlign: "center", marginTop: 10, marginBottom: 50, color: "grey", fontWeight: 'bold' }}
-              onPress={() => props.navigation.navigate("SignupCustomer")}
-            >Sign Up</Text>
-          </TouchableOpacity>
-
-        </View>
-        <View style={{ marginTop: "8%" }}></View>
+        }
       </ImageBackground>
+
     </View>
   );
 }
@@ -170,7 +197,8 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   im_bg: {
     width: '100%', height: '100%'

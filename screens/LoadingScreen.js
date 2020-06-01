@@ -9,8 +9,10 @@ export default function LoadingScreen(props) {
         try {
             //await AsyncStorage.removeItem('token')
             const value = await AsyncStorage.getItem('token');
-            if (value !== null) {
-                console.log(value);
+            const type = await AsyncStorage.getItem('type');
+            //console.log(value, type)
+            if (value !== null && type !== null) {
+                //console.log(value);
                 props.navigation.replace("Home");
             }
             else {
@@ -25,8 +27,9 @@ export default function LoadingScreen(props) {
         detectLogin();
     }, []);
     return (
-        <>
-            <ActivityIndicator size="large" color="blue" />
+        <>{
+            <ActivityIndicator size="large" color="#1e6262" />
+        }
         </>
     );
 }

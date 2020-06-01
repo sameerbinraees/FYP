@@ -1,11 +1,36 @@
-import React, { Component } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { StyleSheet, Text, View, SafeAreaView, Image, ScrollView } from "react-native";
 import { Appbar } from 'react-native-paper';
-
-import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { Icon } from 'react-native-elements';
+import { Avatar } from 'react-native-elements';
+
+import { UserContext } from "../UserContext";
 
 export default function Profile({ navigation }) {
+
+    const { user } = useContext(UserContext);
+
+    const [email, setEmail] = useState('');
+    const [name, setName] = useState('');
+    const [phone, setPhone] = useState('');
+    const [cnic, setCnic] = useState('');
+
+    const renderDetails = () => {
+        setName(user.name)
+        setEmail(user.email)
+        setPhone(user.phone)
+        let w_dash = user.cnic
+        let w_dash_1 = w_dash.substr(0, 5);
+        let w_dash_2 = w_dash.substr(5, 7);
+        let w_dash_3 = w_dash.substr(12, 1);
+        w_dash = w_dash_1 + "-" + w_dash_2 + "-" + w_dash_3
+        setCnic(w_dash)
+    }
+
+    useEffect(() => {
+        renderDetails();
+    }, [email, phone, name, cnic]);
+
     return (
         <SafeAreaView style={styles.container}>
             <Appbar.Header style={{ backgroundColor: "#1e6262", alignItems: "center" }}>
@@ -18,23 +43,24 @@ export default function Profile({ navigation }) {
                 <View style={{ alignItems: "center", flex: 2, justifyContent: 'space-between', padding: 10 }}>
                 </View>
 
-
-
-                <View style={{ alignSelf: "center" }}>
-                    <View style={styles.profileImage}>
-                        <Image source={require("../assets/profile-pic.jpg")} style={styles.image} resizeMode="center"></Image>
-                    </View>
-
-
-                    <View style={styles.add}>
-                        <Icon name={'edit'} containerStyle={styles.icon} size={24} color="#DFD8C8" style={{ marginTop: 5, marginLeft: 2 }} onPress={console.log('I was clicked')} />
-
-                    </View>
-                </View>
+                <Avatar
+                    style={styles.profileImage}
+                    source={{
+                        uri:
+                            'https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg',
+                    }}
+                    showAccessory
+                />
 
                 <View style={styles.infoContainer}>
-                    <Text style={[styles.text, { fontWeight: "200", fontSize: 36 }]}>Sameer</Text>
-                    <Text style={[styles.text, { color: "#AEB5BC", fontSize: 14, textDecorationLine: 'underline' }]}>Islamabad</Text>
+                    <Text style={[styles.text, {
+                        fontWeight: "100", fontSize: 32, textAlign: "center",
+                    }]}>
+                        {name}
+                    </Text>
+                    <Text style={[styles.text, { color: "#AEB5BC", fontSize: 14, textDecorationLine: 'underline' }]}>
+                        Name
+                    </Text>
                 </View>
 
 
@@ -46,8 +72,12 @@ export default function Profile({ navigation }) {
                         size={30}
                     />
                     <View style={{ width: 250, alignItems: "center" }}>
-                        <Text style={[styles.text, { fontSize: 18 }]}>+92-456123789</Text>
-                        <Text style={[styles.text, { color: "#AEB5BC", fontSize: 14, textDecorationLine: 'underline' }]}>Mobile</Text>
+                        <Text style={[styles.text, { fontSize: 18 }]}>
+                            +92-{phone}
+                        </Text>
+                        <Text style={[styles.text, { color: "#AEB5BC", fontSize: 14, textDecorationLine: 'underline' }]}>
+                            Mobile
+                        </Text>
                     </View>
                 </View>
 
@@ -59,8 +89,12 @@ export default function Profile({ navigation }) {
                         size={30}
                     />
                     <View style={{ width: 250, alignItems: "center" }}>
-                        <Text style={[styles.text, { fontSize: 18 }]}>sammy@gmail.com</Text>
-                        <Text style={[styles.text, { color: "#AEB5BC", fontSize: 14, textDecorationLine: 'underline' }]}>Email</Text>
+                        <Text style={[styles.text, { fontSize: 18 }]}>
+                            {email}
+                        </Text>
+                        <Text style={[styles.text, { color: "#AEB5BC", fontSize: 14, textDecorationLine: 'underline' }]}>
+                            Email
+                        </Text>
                     </View>
                 </View>
 
@@ -71,8 +105,12 @@ export default function Profile({ navigation }) {
                         size={30}
                     />
                     <View style={{ width: 250, alignItems: "center" }}>
-                        <Text style={[styles.text, { fontSize: 18 }]}>31101-123456789</Text>
-                        <Text style={[styles.text, { color: "#AEB5BC", fontSize: 14, textDecorationLine: 'underline' }]}>CNIC Number</Text>
+                        <Text style={[styles.text, { fontSize: 18 }]}>
+                            {cnic}
+                        </Text>
+                        <Text style={[styles.text, { color: "#AEB5BC", fontSize: 14, textDecorationLine: 'underline' }]}>
+                            CNIC Number
+                        </Text>
                     </View>
                 </View>
             </ScrollView>
@@ -124,7 +162,8 @@ const styles = StyleSheet.create({
         width: 200,
         height: 200,
         borderRadius: 100,
-        overflow: "hidden"
+        overflow: "hidden",
+        alignSelf: "center"
     },
     dm: {
         backgroundColor: "#41444B",
