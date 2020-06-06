@@ -11,8 +11,6 @@ import LoginScreen from './screens/Login'
 import SignupScreenCustomer from './screens/SignupCustomer'
 import SignupScreenVendor from './screens/SignupVendor'
 import HomeScreen from './screens/Home'
-import Header from './screens/Header'
-import comp from './screens/mycomponent'
 import LoadingScreen from './screens/LoadingScreen'
 import QRGen from './screens/QRGen'
 import QRScan from './screens/QRScan'
@@ -20,6 +18,11 @@ import Transactions from './screens/Transactions'
 import FAQs from './screens/FAQs'
 import Promotions from './screens/Promotions'
 import Profile from './screens/Profile'
+import Settings from './screens/Settings'
+import Contact from './screens/Contact'
+import About from './screens/About'
+import Help from './screens/Help'
+
 import AntIcon from "react-native-vector-icons/AntDesign";
 import { Ionicons } from '@expo/vector-icons';
 
@@ -29,7 +32,7 @@ const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 const Tab = createBottomTabNavigator();
 
-const HomeIcon = <AntIcon name="qrcode" color="#1e6262" size={70} style={{}} />
+const HomeIcon = <AntIcon name="qrcode" color="#14213D" size={70} style={{}} />
 
 function Root() {
 
@@ -44,7 +47,7 @@ function Root() {
           iconName = focused
             ? 'ios-home'
             : 'ios-home';
-        } else if (route.name === 'Help/FAQs') {
+        } else if (route.name === 'FAQs') {
           iconName = focused ? 'md-help-circle' : 'md-help-circle-outline';
         } else if (route.name === 'Settings') {
           iconName = focused ? 'md-settings' : 'md-settings';
@@ -55,16 +58,16 @@ function Root() {
       },
     })}
       tabBarOptions={{
-        activeTintColor: '#b4f1f1',
-        inactiveTintColor: 'white',
-        activeBackgroundColor: '#2d767f',
-        inactiveBackgroundColor: '#2d767f',
+        activeTintColor: '#E7ECEF',
+        inactiveTintColor: '#E7ECEF',
+        activeBackgroundColor: '#FCA311',
+        inactiveBackgroundColor: '#14213D',
       }}
       initialRouteName="Home">
 
-      <Tab.Screen name="Help/FAQs" component={FAQs} />
+      <Tab.Screen name="FAQs" component={FAQs} />
       <Tab.Screen name="Home" component={HomeScreen} />
-      <Tab.Screen name="Settings" component={FAQs} />
+      <Tab.Screen name="Settings" component={Settings} />
     </Tab.Navigator>
 
 
@@ -74,12 +77,12 @@ function Root() {
 function Draw() {
   return (
 
-    <Drawer.Navigator overlayColor="#1e6262" drawerStyle={{
+    <Drawer.Navigator overlayColor="#14213D" drawerStyle={{
       backgroundColor: 'white',
     }}
       drawerContentOptions={{
-        activeTintColor: '#2c8f8f',
-        inactiveTintColor: '#1e6262'
+        activeTintColor: '#f09703',
+        inactiveTintColor: '#14213D'
 
       }}
       screenOptions={({ route }) => ({
@@ -100,11 +103,11 @@ function Draw() {
             iconName = focused ? 'md-call' : 'md-call';
           } else if (route.name === 'About') {
             iconName = focused ? 'md-information-circle-outline' : 'md-information-circle-outline';
-          } else if (route.name === 'Help') {
+          } /*else if (route.name === 'Help') {
             iconName = focused ? 'ios-help-buoy' : 'ios-help-buoy';
           } else if (route.name === 'Invite a Friend') {
             iconName = focused ? 'ios-add-circle' : 'ios-add-circle';
-          } else if (route.name === 'Settings') {
+          }*/ else if (route.name === 'Settings') {
             iconName = focused ? 'md-settings' : 'md-settings';
           }
 
@@ -114,14 +117,14 @@ function Draw() {
         },
       })}>
       <Drawer.Screen name="Home" component={Root} />
-      <Drawer.Screen name="Promotions" component={Promotions} />
       <Drawer.Screen name="View Profile" component={Profile} />
+      <Drawer.Screen name="Promotions" component={Promotions} />
       <Drawer.Screen name="FAQs" component={FAQs} />
-      <Drawer.Screen name="Help" component={FAQs} />
-      <Drawer.Screen name="About" component={FAQs} />
-      <Drawer.Screen name="Contact" component={FAQs} />
-      <Drawer.Screen name="Invite a Friend" component={FAQs} />
-      <Drawer.Screen name="Settings" component={FAQs} />
+      <Drawer.Screen name="About" component={About} />
+      <Drawer.Screen name="Contact" component={Contact} />
+      {/*<Drawer.Screen name="Help" component={Help} />
+      <Drawer.Screen name="Invite a Friend" component={FAQs} />*/}
+      <Drawer.Screen name="Settings" component={Settings} />
 
 
     </Drawer.Navigator>

@@ -157,8 +157,7 @@ const Banner = () => {
             >
                 <Image
                     style={[styles.card, {
-                        borderTopRightRadius: 10,
-                        borderTopLeftRadius: 10
+                        borderRadius: 10,
                     }]}
                     source={{ uri: data.coverImageUri }}
                 />
@@ -193,9 +192,9 @@ const Banner = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#fff',
         alignItems: 'center',
         justifyContent: 'center',
+
     },
     cardContainer: {
         alignItems: 'center',
@@ -209,8 +208,8 @@ const styles = StyleSheet.create({
 
     },
     card: {
-        width: width,
-        height: 140,
+        width: width * 0.96,
+        height: 190,
 
     },
     cornerLabel: {

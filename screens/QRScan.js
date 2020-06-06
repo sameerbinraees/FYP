@@ -1,8 +1,9 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useCallback, useContext, useState, useEffect } from 'react';
 import { Text, View, StyleSheet, ScrollView, Modal, Alert } from 'react-native';
 import { BarCodeScanner } from 'expo-barcode-scanner';
 import { Icon } from 'react-native-elements';
 import { Appbar, Button, TextInput, ActivityIndicator } from 'react-native-paper';
+import { FancyAlert } from 'react-native-expo-fancy-alerts';
 
 import { UserContext } from "../UserContext";
 
@@ -23,7 +24,14 @@ export default function QRScan({ navigation }) {
     const [scannerID, setScannerID] = useState('')
 
     const [error, setError] = useState(false);
-    const [clicked, setClicked] = useState(false);
+    const [statusType, setStatusType] = useState('');
+    const [clicked, setClicked] = useState(false)
+    const [visible, setVisible] = useState(true);
+    const [errMsg, setErrMsg] = useState('')
+
+    const toggleAlert = useCallback(() => {
+        setVisible(!visible);
+    }, [visible]);
 
     useEffect(() => {
         (async () => {
@@ -34,86 +42,64 @@ export default function QRScan({ navigation }) {
 
     useEffect(() => {
         formatData()
-    }, [value, ID, name, email, cnic, scannerID]);
+    }, [value, ID, name, email, cnic, scannerID,]);
 
 
     const sendTransaction = () => {
         //console.log("Scanner ki id: " + scannerID + " Customer ki id: " + ID)
         setClicked(true)
         setError(false)
-        fetch("http://192.168.43.145:3000/transactions/", {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                customerID: ID,
-                vendorID: scannerID,
-                amount: amount
-            }),
-        })
-            .then(res => res.json())
-            .then(async (data) => {
-                console.log(data)
-                try {
-                    if (data.Error) {
-                        setError(true);
-                        setValue('')
-                        Alert.alert(
-                            "Error",
-                            data.Error,
-                            [
-                                { text: "OK", onPress: () => console.log("OK Pressed") }
-                            ],
-                            { cancelable: false }
-                        );
-                        setModalVisible(!modalVisible)
-                    }
-                    else if (!data.Error) {
-                        Alert.alert(
-                            "Success",
-                            "Transaction recorded successfully",
-                            [
-                                { text: "OK", onPress: () => console.log("OK Pressed") }
-                            ],
-                            { cancelable: false }
-                        );
-                        setScanned(false)
-                        setModalVisible(!modalVisible)
-                        setError(true);
-                    }
-
-
-                } catch (e) {
-                    Alert.alert(
-                        "Error",
-                        "Error while recording the transaction",
-                        [
-                            { text: "OK", onPress: () => console.log("OK Pressed") }
-                        ],
-                        { cancelable: false }
-                    );
-                    setValue('')
-                    setModalVisible(!modalVisible)
-                    console.log("Error: ", e)
-                }
+        if (!amount) {
+            //createAlert("Email is required")
+            errSet("Amount is required", "error")
+        }
+        else {
+            fetch("http://192.168.43.145:3000/transactions/", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    customerID: ID,
+                    vendorID: scannerID,
+                    amount: amount
+                }),
             })
-            .catch((error) => {
-                Alert.alert(
-                    "Error",
-                    "Error while recording the transaction",
-                    [
-                        { text: "OK", onPress: () => console.log("OK Pressed") }
-                    ],
-                    { cancelable: false }
-                );
-                setValue('')
-                setModalVisible(!modalVisible)
-                console.error(error);
-            });
+                .then(res => res.json())
+                .then(async (data) => {
+                    //console.log(data)
+                    try {
+                        if (data.Error) {
+                            //setError(true);
+                            //setValue('')
+                            errSet(`${data.Error}`, "error")
+                            //setModalVisible(!modalVisible)
+                        }
+                        else if (!data.Error) {
+                            errSet("Transaction recorded successfully", "success")
+                        }
+
+
+                    } catch (e) {
+                        errSet(`Error while recording the transaction ${e}`, "error")
+
+                        //setValue('')
+                        //setModalVisible(!modalVisible)
+                        //console.log("Error: ", e)
+                    }
+                })
+                .catch((error) => {
+                    errSet(`Error while recording the transaction: ${error}`, "error")
+
+                    //setValue('')
+                    //setModalVisible(!modalVisible)
+                    //console.error(error);
+                });
+        }
     }
 
     const formatData = () => {
+        setStatusType(null)
         if (value) {
             let arr = value.split(":")
 
@@ -123,7 +109,7 @@ export default function QRScan({ navigation }) {
             setEmail(arr[4])
 
             setScannerID(user._id)
-            console.log(scannerID)
+            //console.log(scannerID)
         }
     }
 
@@ -137,6 +123,106 @@ export default function QRScan({ navigation }) {
         setScanned(true);
         handleData(data)
     };
+
+    const ShowAlert = () => {
+        if (statusType == "error") {
+            return (
+                <View>
+                    <FancyAlert
+                        visible={visible}
+
+                        icon={<View style={{
+                            flex: 1,
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            backgroundColor: 'red',
+                            borderRadius: 50,
+                            width: '100%',
+                        }}><Icon
+                                reverse
+                                name='x'
+                                type='feather'
+                                color="red"
+                                size={20}
+                            />
+
+                        </View>}
+                        style={{ backgroundColor: 'white' }}
+                    >
+                        <Text style={{ marginTop: -16, marginBottom: 32, textAlign: "center", }}>{errMsg}</Text>
+                        <Button
+                            style={{ marginBottom: "5%", backgroundColor: "red" }}
+                            onPress={() => {
+                                setScanned(false)
+                                setModalVisible(!modalVisible)
+                                setError(true);
+                                setValue('')
+                                toggleAlert
+                            }}
+                            mode="contained">
+                            Close
+                    </Button>
+                    </FancyAlert>
+                </View>
+            )
+        }
+        else if (statusType == "success") {
+            return (
+                <View>
+                    <FancyAlert
+                        visible={visible}
+
+                        icon={<View style={{
+                            flex: 1,
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            backgroundColor: 'green',
+                            borderRadius: 50,
+                            width: '100%',
+                        }}><Icon
+                                reverse
+                                name='check'
+                                type='feather'
+                                color="green"
+                                size={20}
+                            />
+
+                        </View>}
+                        style={{ backgroundColor: 'white' }}
+                    >
+                        <Text style={{ marginTop: -16, marginBottom: 32, textAlign: "center", }}>{errMsg}</Text>
+                        <Button
+                            style={{ marginBottom: "5%", backgroundColor: "green" }}
+                            onPress={() => {
+                                setScanned(false)
+                                setModalVisible(!modalVisible)
+                                setError(false);
+                                toggleAlert
+                            }}
+                            mode="contained">
+                            Close
+                    </Button>
+                    </FancyAlert>
+                </View>
+            )
+        }
+        else {
+            return (
+                null
+            )
+        }
+    }
+
+    const errSet = (msg, type) => {
+        //console.log(msg, type)
+        setVisible(true)
+        setError(true)
+        setStatusType(type)
+        setErrMsg(msg)
+        ShowAlert()
+    }
 
     if (hasPermission === null) {
         return <Text>Requesting for camera permission</Text>;
@@ -152,7 +238,7 @@ export default function QRScan({ navigation }) {
                 flexDirection: 'column',
             }}>
 
-            <Appbar.Header style={{ backgroundColor: "#1e6262", alignItems: "center" }}>
+            <Appbar.Header style={{ backgroundColor: "#14213D", alignItems: "center" }}>
                 <Appbar.Action icon="arrow-left" onPress={() => navigation.goBack()} />
                 <Text style={{ color: "#fafaf6", fontSize: 22, fontWeight: "bold" }}>
                     QR Code Scan
@@ -168,18 +254,26 @@ export default function QRScan({ navigation }) {
                 transparent={false}
                 visible={modalVisible}
                 onRequestClose={() => {
-                    Alert.alert('Transaction was not successfull');
-                    setScanned(false)
-                    setModalVisible(!modalVisible)
-                    setError(false);
+                    errSet("Transaction was not successfull", "error")
+                    //Alert.alert('Transaction was not successfull');
+                    //setScanned(false)
+                    //setModalVisible(!modalVisible)
+                    //setError(false);
                     //setModalVisible(!modalVisible);
                 }}>
 
-                <Appbar.Header style={{ backgroundColor: "#1e6262", alignItems: "center", justifyContent: 'center' }}>
+                <Appbar.Header style={{ backgroundColor: "#14213D", alignItems: "center", justifyContent: 'center' }}>
                     <Text style={{ color: "#fafaf6", fontSize: 30, }}>
                         Confirm Details
                     </Text>
                 </Appbar.Header>
+
+                {error ?
+                    <ShowAlert />
+                    :
+                    <></>
+                }
+
                 {(clicked && !error)
                     ?
                     <View style={styles.container}>
@@ -238,7 +332,7 @@ export default function QRScan({ navigation }) {
                                 keyboardType='numeric'
                                 maxLength={7}
                                 placeholder="Enter Amount"
-                                theme={{ colors: { primary: "#1e6262" } }}
+                                theme={{ colors: { primary: "#14213D" } }}
                                 value={amount}
                                 onChangeText={text => setAmount(text)}
                             />
@@ -268,11 +362,12 @@ const styles = StyleSheet.create({
         backgroundColor: "#dedede"
     },
     button: {
-        marginLeft: 15, marginRight: 15, backgroundColor: "#1e6262", borderRadius: 30
+        marginLeft: 15, marginRight: 15,
+        backgroundColor: "#FCA311", borderRadius: 30,
     },
     text: {
         //fontFamily: "normal",
-        color: "#52575D"
+        color: "#403F4C"
     },
     infoContainer: {
         alignSelf: "center",

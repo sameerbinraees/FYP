@@ -1,6 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, ImageBackground, Alert, SafeAreaView, } from 'react-native';
 import { Appbar, Button, TextInput, ActivityIndicator } from 'react-native-paper';
+import { FancyAlert } from 'react-native-expo-fancy-alerts';
+import { Icon } from 'react-native-elements'
+
 
 export default function Signup(props) {
     const [email, setEmail] = useState('');
@@ -9,34 +12,141 @@ export default function Signup(props) {
     const [name, setName] = useState('');
     const [phone, setPhone] = useState('');
     const [cnic, setCnic] = useState('');
-    const [error, setError] = useState('');
+    const [error, setError] = useState(false);
+    const [statusType, setStatusType] = useState('');
     const [clicked, setClicked] = useState(false)
 
-    const createErrorAlert = (err) =>
-        Alert.alert(
-            "Error",
-            err,
-            [
-                { text: "OK", onPress: () => console.log("OK Pressed") }
-            ],
-            { cancelable: false }
-        );
+    const [visible, setVisible] = useState(true);
+    const [errMsg, setErrMsg] = useState('')
+
+    const toggleAlert = useCallback(() => {
+        setVisible(!visible);
+    }, [visible]);
+
+    useEffect(() => {
+
+    }, [statusType, errMsg, visible])
+
+    const ShowAlert = () => {
+        if (statusType == "error") {
+            return (
+                <View>
+                    <FancyAlert
+                        visible={visible}
+
+                        icon={<View style={{
+                            flex: 1,
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            backgroundColor: 'red',
+                            borderRadius: 50,
+                            width: '100%',
+                        }}><Icon
+                                reverse
+                                name='x'
+                                type='feather'
+                                color="red"
+                                size={20}
+                            />
+
+                        </View>}
+                        style={{ backgroundColor: 'white' }}
+                    >
+                        <Text style={{ marginTop: -16, marginBottom: 32, textAlign: "center", }}>{errMsg}</Text>
+                        <Button
+                            style={{ marginBottom: "5%", backgroundColor: "red" }}
+                            onPress={toggleAlert}
+                            mode="contained">
+                            Close
+                    </Button>
+                    </FancyAlert>
+                </View>
+            )
+        }
+        else if (statusType == "success") {
+            return (
+                <View>
+                    <FancyAlert
+                        visible={visible}
+
+                        icon={<View style={{
+                            flex: 1,
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            backgroundColor: 'green',
+                            borderRadius: 50,
+                            width: '100%',
+                        }}><Icon
+                                reverse
+                                name='check'
+                                type='feather'
+                                color="green"
+                                size={20}
+                            />
+
+                        </View>}
+                        style={{ backgroundColor: 'white' }}
+                    >
+                        <Text style={{ marginTop: -16, marginBottom: 32, textAlign: "center", }}>{errMsg}</Text>
+                        <Button
+                            style={{ marginBottom: "5%", backgroundColor: "green" }}
+                            onPress={() => {
+                                props.navigation.replace('Login');
+                                toggleAlert
+                            }}
+                            mode="contained">
+                            Close
+                    </Button>
+                    </FancyAlert>
+                </View>
+            )
+        }
+        else {
+            return (
+                null
+            )
+        }
+    }
+
+    const errSet = (msg, type) => {
+        //console.log(msg, type)
+        setVisible(true)
+        setError(true)
+        setStatusType(type)
+        setErrMsg(msg)
+        ShowAlert()
+    }
+
+    /*
+        const createErrorAlert = (err) =>
+            Alert.alert(
+                "Error",
+                err,
+                [
+                    { text: "OK", onPress: () => console.log("OK Pressed") }
+                ],
+                { cancelable: false }
+            );
+    */
 
     function sendCredentials() {
+        setError(false)
         if (!email) {
-            createErrorAlert("Email is required")
+            errSet("Email is required", "error")
         }
         else if (!password) {
-            createErrorAlert("Password is required")
+            errSet("Password is required", "error")
         }
         else if (!name) {
-            createErrorAlert("Name is required")
+            errSet("Name is required", "error")
         }
         else if (!phone || phone.length != 11) {
-            createErrorAlert("Enter valid phone number")
+            errSet("Enter valid phone number", "error")
         }
         else if (!cnic || cnic.length != 13) {
-            createErrorAlert("Enter valid CNIC")
+            errSet("Enter valid CNIC", "error")
         }
         else {
             setClicked(true)
@@ -63,33 +173,26 @@ export default function Signup(props) {
                             console.log(data.Error)
                             if (data.Error.includes("E11000")) {
                                 if (data.Error.includes("email"))
-                                    Alert.alert(
-                                        "Error",
-                                        "Already an account exists with email: " + email
-                                    )
+                                    errSet(`Already an account exists with email: ${email}`, "error")
+
                                 if (data.Error.includes("cnic"))
-                                    Alert.alert(
-                                        "Error",
-                                        "Already an account exists with cnic: " + cnic
-                                    )
+                                    errSet(`Already an account exists with CNIC: ${cnic}`, "error")
+
                             }
 
                         }
                         else if (!data.Error) {
                             setError(false);
                             //console.log("Inside")
-                            Alert.alert(
-                                "Signup successfull",
-                                "Now login with your credentials "
-                            )
-                            props.navigation.replace('Login');
+                            errSet("Signup successfull, Now login with your credentials", "success")
+
                         }
                     } catch (e) {
-                        console.log("Error1: ", e)
+                        console.log("Error: ", e)
                     }
                 })
                 .catch((error) => {
-                    console.error("Error2" + error);
+                    console.error("Error" + error);
                 });
         }
     }
@@ -98,118 +201,129 @@ export default function Signup(props) {
 
         <View style={styles.container}>
 
-            <ImageBackground source={require('../assets/LoginBG.jpg')} style={styles.im_bg}>
+            <ImageBackground source={require('../assets/bg-login-signup.png')} style={styles.im_bg}>
 
-                <Appbar.Header style={{ backgroundColor: "white", justifyContent: "center" }}>
 
-                </Appbar.Header>
+
+                {error ?
+                    <ShowAlert />
+                    :
+                    <></>
+                }
 
                 {(clicked && !error)
                     ?
+
                     <View style={styles.container}>
-                        <ActivityIndicator size="large" color="#1e6262" />
+                        <ShowAlert />
+                        <ActivityIndicator size="large" color="#14213D" />
                         <Text style={{ marginTop: 20 }}>Validating the data...</Text>
                     </View>
                     :
 
                     <View style={{
-                        borderRadius: 40,
-                        backgroundColor: "#ededed",
-                        margin: "10%",
-                        marginTop: "4%"
+                        flex: 1,
+                        justifyContent: "center",
                     }}>
 
-                        <Text style={{ fontSize: 28, textAlign: "center", marginTop: "8%", color: "#1e6262" }}>
-                            Signup as
+                        <View style={{
+                            borderRadius: 40,
+                            backgroundColor: "#ededed",
+                            margin: "10%",
+                        }}>
+
+                            <Text style={{ fontSize: 28, textAlign: "center", marginTop: "8%", color: "#14213D" }}>
+                                Signup as
                     </Text>
 
-                        <Text style={{ fontSize: 30, fontWeight: "bold", textAlign: "center", marginBottom: "2%", color: "#1e6262" }}>
-                            Vendor
+                            <Text style={{ fontSize: 30, fontWeight: "bold", textAlign: "center", marginBottom: "2%", color: "#14213D" }}>
+                                Vendor
                     </Text>
 
-                        <Text style={{ fontSize: 20, textAlign: "center", color: "grey" }}>
-                            Want to signup as Customer?
+                            <Text style={{ fontSize: 20, textAlign: "center", color: "grey" }}>
+                                Want to signup as Customer?
                     </Text>
-                        <TouchableOpacity>
-                            <Text style={{ fontSize: 20, textAlign: "center", marginBottom: "6%", color: "grey", fontWeight: 'bold' }}
-                                onPress={() => props.navigation.navigate("SignupCustomer")}
-                            >
-                                Click here
+                            <TouchableOpacity>
+                                <Text style={{ fontSize: 20, textAlign: "center", marginBottom: "6%", color: "grey", fontWeight: 'bold' }}
+                                    onPress={() => props.navigation.navigate("SignupCustomer")}
+                                >
+                                    Click here
                         </Text>
-                        </TouchableOpacity>
+                            </TouchableOpacity>
 
-                        <TextInput
-                            style={styles.textInput}
-                            label='Email'
-                            underlineColor="transparent"
-                            placeholder="Enter your Email"
-                            theme={{ colors: { primary: "#1e6262" } }}
-                            value={email}
-                            onChangeText={text => setEmail(text)}
-                        />
+                            <TextInput
+                                style={styles.textInput}
+                                label='Email'
+                                underlineColor="transparent"
+                                placeholder="Enter your Email"
+                                theme={{ colors: { primary: "#14213D" } }}
+                                value={email}
+                                onChangeText={text => setEmail(text)}
+                            />
 
-                        <TextInput
-                            style={styles.textInput}
-                            label='Password'
-                            underlineColor="transparent"
-                            placeholder="Enter your Password"
-                            secureTextEntry={true}
-                            theme={{ colors: { primary: "#1e6262" } }}
-                            value={password}
-                            onChangeText={text => setPassword(text)}
-                        />
+                            <TextInput
+                                style={styles.textInput}
+                                label='Password'
+                                underlineColor="transparent"
+                                placeholder="Enter your Password"
+                                secureTextEntry={true}
+                                theme={{ colors: { primary: "#14213D" } }}
+                                value={password}
+                                onChangeText={text => setPassword(text)}
+                            />
 
-                        <TextInput
-                            style={styles.textInput}
-                            label='Name'
-                            underlineColor="transparent"
-                            placeholder="Enter your Full Name"
-                            theme={{ colors: { primary: "#1e6262" } }}
-                            value={name}
-                            onChangeText={text => setName(text)}
-                        />
+                            <TextInput
+                                style={styles.textInput}
+                                label='Name'
+                                underlineColor="transparent"
+                                placeholder="Enter your Full Name"
+                                theme={{ colors: { primary: "#14213D" } }}
+                                value={name}
+                                onChangeText={text => setName(text)}
+                            />
 
-                        <TextInput
-                            style={styles.textInput}
-                            label='Phone Number'
-                            underlineColor="transparent"
-                            keyboardType='numeric'
-                            maxLength={11}
-                            placeholder="Enter your Mobile Number"
-                            theme={{ colors: { primary: "#1e6262" } }}
-                            value={phone}
-                            onChangeText={text => setPhone(text)}
-                        />
+                            <TextInput
+                                style={styles.textInput}
+                                label='Phone Number'
+                                underlineColor="transparent"
+                                keyboardType='numeric'
+                                maxLength={11}
+                                placeholder="Enter your Mobile Number"
+                                theme={{ colors: { primary: "#14213D" } }}
+                                value={phone}
+                                onChangeText={text => setPhone(text)}
+                            />
 
 
-                        <TextInput
-                            style={styles.textInput}
-                            label='CNIC'
-                            underlineColor="transparent"
-                            keyboardType='numeric'
-                            maxLength={13}
-                            placeholder="Enter your CNIC"
-                            theme={{ colors: { primary: "#1e6262" } }}
-                            value={cnic}
-                            onChangeText={text => setCnic(text)}
-                        />
+                            <TextInput
+                                style={styles.textInput}
+                                label='CNIC'
+                                underlineColor="transparent"
+                                keyboardType='numeric'
+                                maxLength={13}
+                                placeholder="Enter your CNIC"
+                                theme={{ colors: { primary: "#14213D" } }}
+                                value={cnic}
+                                onChangeText={text => setCnic(text)}
+                            />
 
-                        <Button style={styles.button}
-                            onPress={sendCredentials}
-                            mode="contained">
-                            Sign Up
+                            <Button style={styles.button}
+                                onPress={sendCredentials}
+                                mode="contained">
+                                Sign Up
                         </Button>
 
-                        <Text style={{ fontSize: 20, textAlign: "center", marginTop: "3%", color: "grey" }}
-                        >Already have an account?</Text>
-                        <TouchableOpacity>
-                            <Text style={{ fontSize: 20, textAlign: "center", marginBottom: "8%", color: "grey", fontWeight: 'bold' }}
-                                onPress={() => props.navigation.navigate("Login")}
-                            >
-                                Sign In
+                            <Text style={{ fontSize: 20, textAlign: "center", marginTop: "3%", color: "grey" }}
+                            >Already have an account?</Text>
+                            <TouchableOpacity>
+                                <Text style={{ fontSize: 20, textAlign: "center", marginBottom: "8%", color: "grey", fontWeight: 'bold' }}
+                                    onPress={() => props.navigation.navigate("Login")}
+                                >
+                                    Sign In
                         </Text>
-                        </TouchableOpacity>
+                            </TouchableOpacity>
 
+                        </View>
                     </View>
                 }
             </ImageBackground>
@@ -231,7 +345,7 @@ const styles = StyleSheet.create({
 
     },
     button: {
-        marginLeft: 15, marginRight: 15, backgroundColor: "#1e6262", borderRadius: 30
+        marginLeft: 15, marginRight: 15, backgroundColor: "#FF9F00", borderRadius: 30
     },
     container: {
         flex: 1,

@@ -67,7 +67,7 @@ export default function Transactions({ navigation }) {
 
     return (
         <SafeAreaView style={styles.container}>
-            <Appbar.Header style={{ backgroundColor: "#1e6262", alignItems: "center" }}>
+            <Appbar.Header style={{ backgroundColor: "#14213D", alignItems: "center" }}>
                 <Appbar.Action icon="arrow-left" onPress={() => navigation.goBack()} />
                 <Text style={{ color: "#fafaf6", fontSize: 22, fontWeight: "bold" }}>
                     Transactions
@@ -166,11 +166,12 @@ const styles = StyleSheet.create({
     },
     text: {
         fontFamily: "normal",
-        color: "#52575D",
+        color: "#403F4C",
         textAlign: "center"
     },
     button: {
-        marginLeft: 15, marginRight: 15, backgroundColor: "#1e6262", borderRadius: 30
+        marginLeft: 15, marginRight: 15,
+        backgroundColor: "#FCA311", borderRadius: 30
     },
 
 });

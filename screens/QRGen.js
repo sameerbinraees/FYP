@@ -24,7 +24,7 @@ export default function QRGen({ navigation }) {
         setCnic(user.cnic)
         setID(user._id)
         setQRValue(ID + ":" + name + ":" + phone + ":" + cnic + ":" + email)
-        console.log(JSON.stringify(QRValue))
+        //console.log(JSON.stringify(QRValue))
         //console.log(QRValue.split(" "))
     }
 
@@ -34,7 +34,7 @@ export default function QRGen({ navigation }) {
 
     return (
         <View>
-            <Appbar.Header style={{ backgroundColor: "#1e6262", alignItems: "center" }}>
+            <Appbar.Header style={{ backgroundColor: "#14213D", alignItems: "center" }}>
                 <Appbar.Action icon="arrow-left" onPress={() => navigation.goBack()} />
                 <Text style={{ color: "#fafaf6", fontSize: 22, fontWeight: "bold" }}>
                     QR Code

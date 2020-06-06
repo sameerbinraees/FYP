@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, ImageBackground, AsyncStorage, Image, } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, TouchableHighlight, ImageBackground, AsyncStorage, Image, } from 'react-native';
 //import { Avatar, Header } from 'react-native-elements';
 import { Appbar, Avatar, Searchbar, IconButton, Colors, ActivityIndicator } from 'react-native-paper';
 import { Icon } from 'react-native-elements'
 import AntIcon from "react-native-vector-icons/AntDesign";
 import { Ionicons } from '@expo/vector-icons';
 import Banner from './Banner'
+
 
 import { UserContext } from "../UserContext";
 
@@ -26,7 +27,7 @@ export default function Home({ navigation }) {
         setLogout(true)
         AsyncStorage.removeItem('token').then(() => {
             AsyncStorage.removeItem('type').then(() => {
-                setUser(null)
+                //setUser(null)
                 navigation.navigate("Login")
             })
             //props.navigation.replace("Login");
@@ -37,68 +38,135 @@ export default function Home({ navigation }) {
 
         setToken(await AsyncStorage.getItem('token'))
         setType(await AsyncStorage.getItem('type'))
-
-        if (token && type) {
-            fetch("http://192.168.43.145:3000/" + type + "s/token", {
-                headers: new Headers({
-                    Authorization: "Bearer " + token,
-                    Type: type,
+        //console.log("User is: ", user.name)
+        if (user) {
+            setName(user.name)
+        }
+        if (!user) {
+            if (token && type) {
+                fetch("http://192.168.43.145:3000/" + type + "s/token", {
+                    headers: new Headers({
+                        Authorization: "Bearer " + token,
+                        Type: type,
+                    })
                 })
-            })
-                .then(res => res.json())
-                .then(data => {
-
-                    setCnic(data.cnic);
-                    setEmail(data.email);
-                    setName(data.name);
-                    setPhone(data.phone);
-                    setUser(data);
-                })
+                    .then(res => res.json())
+                    .then(data => {
+                        setUser(data);
+                        setName(data.name)
+                    })
+            }
         }
     }
 
     useEffect(() => {
         fetchDetails();
-    }, [token, type]);
+    }, [token, type, name]);
 
     return (
-        <View style={styles.container}>
+        <View style={styles.containerMain}>
 
-            <ImageBackground source={require('../assets/bg_Home.png')} style={{ width: '100%', height: '100%' }}>
-                <Appbar.Header style={{ backgroundColor: "#1e6262", justifyContent: "space-between" }}>
-                    <Appbar.Action icon="menu" onPress={() => navigation.toggleDrawer()} />
-                    <Text style={{ color: "#fafaf6", fontSize: 25, fontWeight: "bold" }}>
-                        Home
+            {(!user && !Logout)
+                ?
+                <View style={[styles.container, { paddingTop: 70 }]}>
+                    <Image
+                        style={{
+                            width: "100%",
+                            height: 120,
+                        }}
+                        source={require('../assets/tax.png')}
+                    />
+                    <ActivityIndicator size="large" color="#14213D" />
+                    <Text style={{ marginTop: 20 }}>Getting your data</Text>
+                </View>
+                :
+
+                <ImageBackground source={require('../assets/bg-home.png')} style={{ width: '100%', height: '100%' }}>
+                    <Appbar.Header style={{ backgroundColor: "white", justifyContent: "space-between" }}>
+                        <Appbar.Action icon="menu" color="#14213D" onPress={() => navigation.toggleDrawer()} />
+                        <Text style={{ color: "#14213D", fontSize: 25, fontWeight: "bold" }}>
+                            Home
                         </Text>
-                    <Appbar.Action icon="logout" onPress={logout} />
-                </Appbar.Header>
+                        <Appbar.Action icon="logout" color="red" onPress={logout} />
+                    </Appbar.Header>
 
-                {(!user && !Logout)
-                    ?
-                    <View style={[styles.container, { paddingTop: 70 }]}>
-                        <Image
-                            style={{
-                                width: "100%",
-                                height: 120,
-                            }}
-                            source={require('../assets/tax.png')}
-                        />
-                        <ActivityIndicator size="large" color="#1e6262" />
-                        <Text style={{ marginTop: 20 }}>Getting your data</Text>
-                    </View>
-                    :
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     <>
-                        <View style={styles.avatar}>
-                            <Ionicons name="md-contact" color="white" size={70} onPress={() => navigation.navigate("Profile")} />
-                            <Text style={{ fontSize: 30, color: 'white', textAlign: "center" }}>{name}</Text>
-                            <TouchableOpacity>
-                                <Text style={{ color: 'white' }} >View</Text>
-                            </TouchableOpacity>
 
+                        <View style={{ height: "37%", alignItems: 'center', justifyContent: 'center', }}>
+                            {<Banner />}
                         </View>
 
+                        <View style={styles.avatar}>
+                            <Text style={{
+                                fontSize: 22, color: "#403F4C",
+                                textAlign: "center", textDecorationLine: 'underline',
+                                paddingBottom: 7
+                            }}>
+                                Logged in as:
+                            </Text>
+
+                            <View style={{
+                                alignItems: 'center',
+                                flexDirection: 'row',
+                                justifyContent: 'center',
+
+                            }}>
+                                <View style={{ flex: 1 }}></View>
+                                <Ionicons style={{ flex: 2 }} name="md-contact"
+                                    color="#403F4C" size={70}
+                                    onPress={() => navigation.navigate("Profile")} />
+                                <Text style={{ flex: 4, fontSize: 20, color: '#403F4C', textAlign: "center" }}>{name}</Text>
+                                <View style={{ flex: 1 }}></View>
+                            </View>
+                        </View>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                         <View style={{
-                            borderTopLeftRadius: 50, borderTopRightRadius: 50,
+                            height: 150, backgroundColor: "white",
+                            opacity: 0.9,
+                            marginLeft: 10, marginRight: 10, borderRadius: 10,
+                            marginTop: 25
                         }}>
 
                             <View
@@ -107,10 +175,10 @@ export default function Home({ navigation }) {
                                     marginRight: 15,
                                     marginTop: 15,
                                     flexDirection: 'row',
-
                                     justifyContent: 'center',
                                 }}
                             >
+
                                 <View
                                     style={{
                                         margin: 15,
@@ -119,33 +187,25 @@ export default function Home({ navigation }) {
                                         flex: 1
                                     }}
                                 >
-                                    <TouchableOpacity>
-                                        <AntIcon name="qrcode" color="#1e6262" size={70}
+                                    <TouchableHighlight onPress={() => navigation.navigate("QRGen")}>
+
+                                        <Icon
+                                            name='qrcode'
+                                            color='#14213D'
+                                            type='antdesign'
+                                            size={70}
                                             onPress={() => navigation.navigate("QRGen")}
                                         />
-                                        <Text style={{ marginLeft: 10, fontSize: 10 }}
-                                            onPress={() => navigation.navigate("QRGen")}>
-                                            Generate QR
+
+                                    </TouchableHighlight>
+
+                                    <Text style={{ marginLeft: 10, fontSize: 10 }}
+                                        onPress={() => navigation.navigate("QRGen")}>
+                                        Generate QR
                                 </Text>
-                                    </TouchableOpacity>
+
                                 </View>
 
-                                <View
-                                    style={{
-                                        margin: 15,
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                        flex: 1
-                                    }}
-                                >
-
-                                    <TouchableOpacity>
-
-                                        <Ionicons name="md-qr-scanner" color="#1e6262" size={70} onPress={() => navigation.navigate("QRScan")} />
-
-                                        <Text style={{ marginLeft: 10, fontSize: 10 }} onPress={() => navigation.navigate("QRScan")}>Scan QR</Text>
-                                    </TouchableOpacity>
-                                </View>
 
                                 <View
                                     style={{
@@ -155,33 +215,55 @@ export default function Home({ navigation }) {
 
                                     }}
                                 >
+                                    <TouchableHighlight
+                                        onPress={() => navigation.navigate("QRScan")}>
+                                        <Icon
+                                            name='ios-qr-scanner'
+                                            color='#14213D'
+                                            type='ionicon'
+                                            size={70}
+                                            onPress={() => navigation.navigate("QRScan")}
+                                        />
+                                    </TouchableHighlight>
 
-                                    <TouchableOpacity>
+                                    <TouchableHighlight>
+                                        <Text style={{ fontSize: 10 }} onPress={() => navigation.navigate("QRScan")}>QR Scan</Text>
+                                    </TouchableHighlight>
+                                </View>
+
+
+
+                                <View
+                                    style={{
+                                        margin: 15,
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+
+                                    }}
+                                >
+                                    <TouchableHighlight
+                                        onPress={() => navigation.navigate("Transactions")}>
                                         <Icon
                                             name='history'
-                                            color='#1e6262'
+                                            color='#14213D'
+                                            type="material-community"
                                             size={70}
                                             onPress={() => navigation.navigate("Transactions")}
                                         />
-                                        <Text style={{ fontSize: 10 }} onPress={() => navigation.navigate("Transactions")}>View Transactions</Text>
-                                    </TouchableOpacity>
+                                    </TouchableHighlight>
 
+                                    <TouchableHighlight>
+                                        <Text style={{ fontSize: 10 }} onPress={() => navigation.navigate("Transactions")}>View Transactions</Text>
+                                    </TouchableHighlight>
                                 </View>
+
                             </View>
 
-
-                        </View>
-
-                        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', }}>
-                            <Text style={{ fontSize: 25, fontWeight: "bold", marginTop: 20, marginBottom: 10, color: "#1e6262" }}>Promotions</Text>
-                            <Banner />
                         </View>
                     </>
-                }
-            </ImageBackground>
-
-
-        </View>
+                </ImageBackground>
+            }
+        </View >
     );
 }
 
@@ -189,13 +271,30 @@ const styles = StyleSheet.create({
     avatar: {
         alignItems: 'center',
         justifyContent: 'center',
-        marginTop: 10,
-        marginBottom: 90,
+        backgroundColor: 'white',
+        borderRadius: 10,
+        paddingBottom: 10,
+        paddingTop: 10,
+        marginLeft: 10,
+        marginRight: 10,
+        height: 150,
+        opacity: 0.96
+
     },
     container: {
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
     },
+    containerMain: {
+        flex: 1,
+
+    },
+    lineStyle: {
+        borderWidth: 0.5,
+        borderColor: '#dbdbdb',
+    },
+
+
 
 });

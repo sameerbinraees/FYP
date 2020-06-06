@@ -103,14 +103,14 @@ export default class App extends Component {
         return (
             <View style={styles.container}>
 
-                <Appbar.Header style={{ backgroundColor: "#1e6262",  }}>
+                <Appbar.Header style={{ backgroundColor: "#14213D", }}>
                     <Appbar.Action icon="arrow-left" onPress={() => this.props.navigation.goBack()} />
                     <Text style={{ color: "#fafaf6", fontSize: 22, fontWeight: "bold" }}>
                         FAQs
                 </Text>
                 </Appbar.Header>
 
-                <ScrollView contentContainerStyle={{ paddingTop: 30, marginLeft:20, marginRight:20}}>
+                <ScrollView contentContainerStyle={{ paddingTop: 30, marginLeft: 20, marginRight: 20 }}>
                     {/*<Text style={styles.title}>Collapsible/Accordion Example</Text>*/}
 
                     <Text style={styles.selectTitle}>
@@ -172,8 +172,8 @@ export default class App extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#F5FCFF',
-        
+        backgroundColor: '#d6d6d6',
+
     },
     title: {
         textAlign: 'center',
@@ -196,9 +196,13 @@ const styles = StyleSheet.create({
     },
     active: {
         backgroundColor: 'rgba(255,255,255,1)',
+        borderRadius: 5,
+        marginTop: 10
     },
     inactive: {
         backgroundColor: 'rgba(245,252,255,1)',
+        borderRadius: 5,
+        marginTop: 10
     },
     selectors: {
         marginBottom: 10,
@@ -217,7 +221,7 @@ const styles = StyleSheet.create({
         fontWeight: '500',
         padding: 10,
         textAlign: 'center',
-        marginBottom:20,
+        marginBottom: 20,
     },
     multipleToggle: {
         flexDirection: 'row',

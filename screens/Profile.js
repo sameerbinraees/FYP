@@ -1,8 +1,8 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { StyleSheet, Text, View, SafeAreaView, Image, ScrollView } from "react-native";
-import { Appbar } from 'react-native-paper';
+import { Appbar, Avatar } from 'react-native-paper';
 import { Icon } from 'react-native-elements';
-import { Avatar } from 'react-native-elements';
+//import { Avatar } from 'react-native-elements';
 
 import { UserContext } from "../UserContext";
 
@@ -33,88 +33,104 @@ export default function Profile({ navigation }) {
 
     return (
         <SafeAreaView style={styles.container}>
-            <Appbar.Header style={{ backgroundColor: "#1e6262", alignItems: "center" }}>
+            <Appbar.Header style={{ backgroundColor: "#14213D", alignItems: "center" }}>
                 <Appbar.Action icon="arrow-left" onPress={() => navigation.goBack()} />
                 <Text style={{ color: "#fafaf6", fontSize: 22, fontWeight: "bold" }}>
                     Profile
                 </Text>
             </Appbar.Header>
-            <ScrollView showsVerticalScrollIndicator={false}>
-                <View style={{ alignItems: "center", flex: 2, justifyContent: 'space-between', padding: 10 }}>
+
+            {(!user)
+                ?
+
+                <View style={[styles.container, { paddingTop: 70 }]}>
+                    <Image
+                        style={{
+                            width: "100%",
+                            height: 120,
+                        }}
+                        source={require('../assets/tax.png')}
+                    />
+                    <ActivityIndicator size="large" color="#14213D" />
+                    <Text style={{ marginTop: 20 }}>Please wait...</Text>
                 </View>
+                :
 
-                <Avatar
-                    style={styles.profileImage}
-                    source={{
-                        uri:
-                            'https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg',
-                    }}
-                    showAccessory
-                />
+                <ScrollView showsVerticalScrollIndicator={false}>
+                    <View style={{ alignItems: "center", flex: 2, justifyContent: 'space-between', padding: 10 }}>
+                    </View>
 
-                <View style={styles.infoContainer}>
-                    <Text style={[styles.text, {
-                        fontWeight: "100", fontSize: 32, textAlign: "center",
-                    }]}>
-                        {name}
+
+
+                    <Avatar.Image size={200}
+                        style={styles.profileImage}
+                        source={{ uri: 'https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg' }} />
+
+
+
+                    <View style={styles.infoContainer}>
+                        <Text style={[styles.text, {
+                            fontWeight: "100", fontSize: 32, textAlign: "center",
+                        }]}>
+                            {name}
+                        </Text>
+                        <Text style={[styles.text, { color: "#AEB5BC", fontSize: 14, textDecorationLine: 'underline' }]}>
+                            Name
                     </Text>
-                    <Text style={[styles.text, { color: "#AEB5BC", fontSize: 14, textDecorationLine: 'underline' }]}>
-                        Name
-                    </Text>
-                </View>
-
-
-
-                <View style={{ alignItems: "center", flex: 2, justifyContent: 'space-between', padding: 10 }}>
-                    <Icon name="md-call"
-                        type='ionicon'
-                        color='grey'
-                        size={30}
-                    />
-                    <View style={{ width: 250, alignItems: "center" }}>
-                        <Text style={[styles.text, { fontSize: 18 }]}>
-                            +92-{phone}
-                        </Text>
-                        <Text style={[styles.text, { color: "#AEB5BC", fontSize: 14, textDecorationLine: 'underline' }]}>
-                            Mobile
-                        </Text>
                     </View>
-                </View>
 
 
-                <View style={{ alignItems: "center", flex: 2, justifyContent: 'space-between', padding: 10 }}>
-                    <Icon name="envelope"
-                        type='font-awesome'
-                        color='grey'
-                        size={30}
-                    />
-                    <View style={{ width: 250, alignItems: "center" }}>
-                        <Text style={[styles.text, { fontSize: 18 }]}>
-                            {email}
+
+                    <View style={{ alignItems: "center", flex: 2, justifyContent: 'space-between', padding: 10 }}>
+                        <Icon name="md-call"
+                            type='ionicon'
+                            color='grey'
+                            size={30}
+                        />
+                        <View style={{ width: 250, alignItems: "center" }}>
+                            <Text style={[styles.text, { fontSize: 18 }]}>
+                                +92-{phone}
+                            </Text>
+                            <Text style={[styles.text, { color: "#AEB5BC", fontSize: 14, textDecorationLine: 'underline' }]}>
+                                Mobile
                         </Text>
-                        <Text style={[styles.text, { color: "#AEB5BC", fontSize: 14, textDecorationLine: 'underline' }]}>
-                            Email
-                        </Text>
+                        </View>
                     </View>
-                </View>
 
-                <View style={{ alignItems: "center", flex: 2, justifyContent: 'space-between', padding: 10 }}>
-                    <Icon name="address-card"
-                        type='font-awesome'
-                        color='grey'
-                        size={30}
-                    />
-                    <View style={{ width: 250, alignItems: "center" }}>
-                        <Text style={[styles.text, { fontSize: 18 }]}>
-                            {cnic}
+
+                    <View style={{ alignItems: "center", flex: 2, justifyContent: 'space-between', padding: 10 }}>
+                        <Icon name="envelope"
+                            type='font-awesome'
+                            color='grey'
+                            size={30}
+                        />
+                        <View style={{ width: 250, alignItems: "center" }}>
+                            <Text style={[styles.text, { fontSize: 18 }]}>
+                                {email}
+                            </Text>
+                            <Text style={[styles.text, { color: "#AEB5BC", fontSize: 14, textDecorationLine: 'underline' }]}>
+                                Email
                         </Text>
-                        <Text style={[styles.text, { color: "#AEB5BC", fontSize: 14, textDecorationLine: 'underline' }]}>
-                            CNIC Number
-                        </Text>
+                        </View>
                     </View>
-                </View>
-            </ScrollView>
 
+                    <View style={{ alignItems: "center", flex: 2, justifyContent: 'space-between', padding: 10 }}>
+                        <Icon name="address-card"
+                            type='font-awesome'
+                            color='grey'
+                            size={30}
+                        />
+                        <View style={{ width: 250, alignItems: "center" }}>
+                            <Text style={[styles.text, { fontSize: 18 }]}>
+                                {cnic}
+                            </Text>
+                            <Text style={[styles.text, { color: "#AEB5BC", fontSize: 14, textDecorationLine: 'underline' }]}>
+                                CNIC Number
+                        </Text>
+                        </View>
+                    </View>
+                </ScrollView>
+            }
         </SafeAreaView>
 
 
@@ -159,10 +175,7 @@ const styles = StyleSheet.create({
         fontWeight: "500"
     },
     profileImage: {
-        width: 200,
-        height: 200,
-        borderRadius: 100,
-        overflow: "hidden",
+
         alignSelf: "center"
     },
     dm: {
