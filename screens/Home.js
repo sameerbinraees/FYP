@@ -10,15 +10,13 @@ import Banner from './Banner'
 
 import { UserContext } from "../UserContext";
 
+//colors to test #440464 #632d7e, #c86537,#fb8b24, #83314e, #943c44
 
 export default function Home({ navigation }) {
 
     const [token, setToken] = useState('');
     const [type, setType] = useState('');
-    const [email, setEmail] = useState('');
     const [name, setName] = useState('');
-    const [phone, setPhone] = useState('');
-    const [cnic, setCnic] = useState('');
     const [Logout, setLogout] = useState(false)
 
     const { user, setUser } = useContext(UserContext);
@@ -71,12 +69,13 @@ export default function Home({ navigation }) {
                 <View style={[styles.container, { paddingTop: 70 }]}>
                     <Image
                         style={{
-                            width: "100%",
-                            height: 120,
+                            width: 150,
+                            height: 100,
+                            marginBottom: 10
                         }}
-                        source={require('../assets/tax.png')}
+                        source={require('../assets/activity-indicator.png')}
                     />
-                    <ActivityIndicator size="large" color="#14213D" />
+                    <ActivityIndicator size="small" color="#14213D" />
                     <Text style={{ marginTop: 20 }}>Getting your data</Text>
                 </View>
                 :
@@ -115,27 +114,72 @@ export default function Home({ navigation }) {
                             {<Banner />}
                         </View>
 
-                        <View style={styles.avatar}>
-                            <Text style={{
-                                fontSize: 22, color: "#403F4C",
-                                textAlign: "center", textDecorationLine: 'underline',
-                                paddingBottom: 7
-                            }}>
-                                Logged in as:
-                            </Text>
 
+
+                        <View style={styles.avatar}>
+                            {/*
+                            <View style={{ flexDirection: "row", flex: 1 }}>
+                                <View style={{ flex: .2 }}></View>
+
+                                <View style={{ flex: 2, }}>
+                                    <Image
+                                        style={{
+                                            width: 50,
+                                            height: 50,
+                                            alignSelf: "flex-start"
+                                        }}
+                                        source={require('../assets/taxack-icon.png')}
+                                    />
+                                </View>
+                                <View style={{ flex: 2 }}>
+                                    <Text style={{
+                                        fontSize: 22, color: "#403F4C",
+                                        textAlign: "center", textDecorationLine: 'underline',
+                                        paddingBottom: 7
+                                    }}>
+
+                                        Logged in as:
+                                </Text>
+                                </View>
+                                <View style={{ flex: 1 }}></View>
+
+                            </View>
+                        */}
                             <View style={{
                                 alignItems: 'center',
                                 flexDirection: 'row',
                                 justifyContent: 'center',
-
+                                flex: 2
                             }}>
-                                <View style={{ flex: 1 }}></View>
+
+                                <Image
+                                    style={{
+                                        width: 40,
+                                        height: 40,
+                                    }}
+                                    source={require('../assets/taxack-icon.png')}
+                                />
+                                <View
+                                    style={{
+                                        marginLeft: 10,
+                                        height: 100,
+                                        borderWidth: 0.5,
+                                        borderColor: '#FCA311',
+                                    }}
+                                />
+                            </View>
+
+                            <View style={{
+                                alignItems: 'center',
+                                flexDirection: 'column',
+                                justifyContent: 'center',
+                                flex: 5,
+                                marginRight: 10,
+                            }}>
                                 <Ionicons style={{ flex: 2 }} name="md-contact"
-                                    color="#403F4C" size={70}
+                                    color="#403F4C" size={60}
                                     onPress={() => navigation.navigate("Profile")} />
-                                <Text style={{ flex: 4, fontSize: 20, color: '#403F4C', textAlign: "center" }}>{name}</Text>
-                                <View style={{ flex: 1 }}></View>
+                                <Text style={{ flex: 2, fontSize: 20, color: '#403F4C', textAlign: "center" }}>{name}</Text>
                             </View>
                         </View>
 
@@ -164,81 +208,82 @@ export default function Home({ navigation }) {
 
                         <View style={{
                             height: 150, backgroundColor: "white",
-                            opacity: 0.9,
                             marginLeft: 10, marginRight: 10, borderRadius: 10,
-                            marginTop: 25
+                            marginTop: 25,
+
+
                         }}>
 
                             <View
                                 style={{
-                                    marginLeft: 15,
-                                    marginRight: 15,
-                                    marginTop: 15,
                                     flexDirection: 'row',
-                                    justifyContent: 'center',
+                                    justifyContent: "center",
+                                    flex: 1
                                 }}
                             >
+                                {(type == "customer") ?
+                                    <View
+                                        style={{
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            flex: 1
+                                        }}
+                                    >
+                                        <TouchableHighlight onPress={() => navigation.navigate("QRGen")}>
+
+                                            <Icon
+                                                name='qrcode'
+                                                color='#14213D'
+                                                type='antdesign'
+                                                size={70}
+                                                onPress={() => navigation.navigate("QRGen")}
+                                            />
+
+                                        </TouchableHighlight>
+
+                                        <Text style={{ fontSize: 10 }}
+                                            onPress={() => navigation.navigate("QRGen")}>
+                                            Generate QR
+                                        </Text>
+
+                                    </View>
+                                    :
+                                    <></>
+                                }
+
+
+                                {(type == "vendor") ?
+                                    <View
+                                        style={{
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            flex: 1
+                                        }}
+                                    >
+                                        <TouchableHighlight
+                                            onPress={() => navigation.navigate("QRScan")}>
+                                            <Icon
+                                                name='ios-qr-scanner'
+                                                color='#14213D'
+                                                type='ionicon'
+                                                size={70}
+                                                onPress={() => navigation.navigate("QRScan")}
+                                            />
+                                        </TouchableHighlight>
+
+                                        <TouchableHighlight>
+                                            <Text style={{ fontSize: 10 }} onPress={() => navigation.navigate("QRScan")}>QR Scan</Text>
+                                        </TouchableHighlight>
+                                    </View>
+                                    :
+                                    <></>
+                                }
 
                                 <View
                                     style={{
-                                        margin: 15,
                                         alignItems: 'center',
                                         justifyContent: 'center',
                                         flex: 1
-                                    }}
-                                >
-                                    <TouchableHighlight onPress={() => navigation.navigate("QRGen")}>
-
-                                        <Icon
-                                            name='qrcode'
-                                            color='#14213D'
-                                            type='antdesign'
-                                            size={70}
-                                            onPress={() => navigation.navigate("QRGen")}
-                                        />
-
-                                    </TouchableHighlight>
-
-                                    <Text style={{ marginLeft: 10, fontSize: 10 }}
-                                        onPress={() => navigation.navigate("QRGen")}>
-                                        Generate QR
-                                </Text>
-
-                                </View>
-
-
-                                <View
-                                    style={{
-                                        margin: 15,
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-
-                                    }}
-                                >
-                                    <TouchableHighlight
-                                        onPress={() => navigation.navigate("QRScan")}>
-                                        <Icon
-                                            name='ios-qr-scanner'
-                                            color='#14213D'
-                                            type='ionicon'
-                                            size={70}
-                                            onPress={() => navigation.navigate("QRScan")}
-                                        />
-                                    </TouchableHighlight>
-
-                                    <TouchableHighlight>
-                                        <Text style={{ fontSize: 10 }} onPress={() => navigation.navigate("QRScan")}>QR Scan</Text>
-                                    </TouchableHighlight>
-                                </View>
-
-
-
-                                <View
-                                    style={{
-                                        margin: 15,
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-
                                     }}
                                 >
                                     <TouchableHighlight
@@ -263,7 +308,7 @@ export default function Home({ navigation }) {
                     </>
                 </ImageBackground>
             }
-        </View >
+        </View>
     );
 }
 
@@ -273,18 +318,20 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         backgroundColor: 'white',
         borderRadius: 10,
-        paddingBottom: 10,
         paddingTop: 10,
+        paddingBottom: 10,
         marginLeft: 10,
         marginRight: 10,
         height: 150,
-        opacity: 0.96
+        opacity: 1,
+        flexDirection: "row"
 
     },
     container: {
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
+        backgroundColor: '#d6d6d6'
     },
     containerMain: {
         flex: 1,
@@ -298,3 +345,29 @@ const styles = StyleSheet.create({
 
 
 });
+/*                  {(type == "vendor") ?
+                                    <View
+                                        style={{
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            flex: 1
+                                        }}
+                                    >
+                                        <TouchableHighlight
+                                            onPress={() => navigation.navigate("QRScan")}>
+                                            <Icon
+                                                name='ios-qr-scanner'
+                                                color='#14213D'
+                                                type='ionicon'
+                                                size={70}
+                                                onPress={() => navigation.navigate("QRScan")}
+                                            />
+                                        </TouchableHighlight>
+
+                                        <TouchableHighlight>
+                                            <Text style={{ fontSize: 10 }} onPress={() => navigation.navigate("QRScan")}>QR Scan</Text>
+                                        </TouchableHighlight>
+                                    </View>
+                                    :
+                                    <></>
+                                }*/

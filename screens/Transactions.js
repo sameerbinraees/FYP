@@ -57,7 +57,7 @@ export default function Transactions({ navigation }) {
                         })
                     }
                     setArray([...arr])
-                    //console.log(array)
+                    //console.log(array.)
                 })
         }
     }
@@ -83,41 +83,61 @@ export default function Transactions({ navigation }) {
                 }}>
                     <Image
                         style={{
-                            width: "100%",
-                            height: 120,
+                            width: 150,
+                            height: 100,
+                            marginBottom: 10
                         }}
-                        source={require('../assets/tax.png')}
+                        source={require('../assets/activity-indicator.png')}
                     />
-                    <ActivityIndicator size="large" color="#1e6262" />
+                    <ActivityIndicator size="small" color="#14213D" />
                     <Text style={{ marginTop: 20 }}>Fetching your transactions</Text>
                 </View>
                 :
-                <ScrollView showsVerticalScrollIndicator={true}>
-                    {array.map((item, key) => {
-                        return (
-                            <View key={key} style={{
-                                padding: 10, marginTop: 15, marginBottom: 25,
-                                marginLeft: 25, marginRight: 25, flexDirection: 'row',
-                                backgroundColor: 'white', borderRadius: 10, justifyContent: 'center'
-                            }}>
-                                <View style={{ width: 250, alignItems: "center" }}>
-                                    <Text style={[styles.text, { fontSize: 18, color: '#0C0C0C', fontWeight: "bold" }]}>Transaction ID:</Text>
-                                    <Text style={[styles.text, { fontSize: 15, color: '#323232' }]}>{item.transcationID}</Text>
-                                    <Text style={[styles.text, { fontSize: 18, color: '#323232', fontWeight: "bold" }]}>Amount:</Text>
-                                    <Text style={[styles.text, { fontSize: 18, color: '#323232', fontWeight: "bold" }]}>{item.amount}</Text>
-                                    <Text style={[styles.text, { fontSize: 18, color: '#323232', fontWeight: "bold" }]}>Customer: </Text>
-                                    <Text style={[styles.text, { fontSize: 18, color: '#323232' }]}>{item.customer}</Text>
-                                    <Text style={[styles.text, { fontSize: 18, color: '#323232', fontWeight: "bold" }]}>Vendor: </Text>
-                                    <Text style={[styles.text, { fontSize: 18, color: '#323232' }]}>{item.vendor}</Text>
-                                    <Text style={[styles.text, { fontSize: 18, color: '#323232', fontWeight: "bold" }]}>Day/Date: </Text>
-                                    <Text style={[styles.text, { fontSize: 18, color: '#323232' }]}>{item.day_date}</Text>
-                                    <Text style={[styles.text, { fontSize: 18, color: '#323232', fontWeight: "bold" }]}>Time: </Text>
-                                    <Text style={[styles.text, { fontSize: 18, color: '#323232' }]}>{item.time}</Text>
+                <ScrollView showsVerticalScrollIndicator={true}
+                    contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}>
+                    {(array.length != 0 )
+                        ?
+                        array.map((item, key) => {
+                            return (
+                                <View key={key} style={{
+                                    padding: 10, marginTop: 15, marginBottom: 25,
+                                    marginLeft: 25, marginRight: 25, flexDirection: 'row',
+                                    backgroundColor: 'white', borderRadius: 10, justifyContent: 'center'
+                                }}>
+                                    <View style={{ width: 250, alignItems: "center", marginTop: 10, marginBottom: 10 }}>
+                                        <Text style={[styles.text, { fontSize: 18, color: '#0C0C0C', fontWeight: "bold" }]}>Transaction ID:</Text>
+                                        <Text style={[styles.text, { fontSize: 15, color: '#323232' }]}>{item.transcationID}</Text>
+
+                                        <View style={styles.lineStyle} />
+
+                                        <Text style={[styles.text, { fontSize: 18, color: '#323232', fontWeight: "bold" }]}>Amount:</Text>
+                                        <Text style={[styles.text, { fontSize: 18, color: '#323232', fontWeight: "bold" }]}>{item.amount}</Text>
+                                        <Text style={[styles.text, { fontSize: 18, color: '#323232', fontWeight: "bold" }]}>Customer: </Text>
+                                        <Text style={[styles.text, { fontSize: 18, color: '#323232' }]}>{item.customer}</Text>
+                                        <Text style={[styles.text, { fontSize: 18, color: '#323232', fontWeight: "bold" }]}>Vendor: </Text>
+                                        <Text style={[styles.text, { fontSize: 18, color: '#323232' }]}>{item.vendor}</Text>
+                                        <Text style={[styles.text, { fontSize: 18, color: '#323232', fontWeight: "bold" }]}>Day/Date: </Text>
+                                        <Text style={[styles.text, { fontSize: 18, color: '#323232' }]}>{item.day_date}</Text>
+                                        <Text style={[styles.text, { fontSize: 18, color: '#323232', fontWeight: "bold" }]}>Time: </Text>
+                                        <Text style={[styles.text, { fontSize: 18, color: '#323232' }]}>{item.time}</Text>
+                                    </View>
                                 </View>
-                            </View>
+                            )
+                        }
                         )
+                        :
+                        <View style={{
+                            flex: 1,
+                            alignItems: 'center',
+                            justifyContent: 'center'
+                        }}>
+                            <Text style={[styles.text,
+                            { fontSize: 18, color: '#323232', fontWeight: "bold" }]}>
+                                No transactions to show right now.
+                            </Text>
+                        </View>
                     }
-                    )}
+
                     {<View style={{ flexDirection: "row", marginBottom: 35 }}>
                         {
                             next ?
@@ -172,6 +192,13 @@ const styles = StyleSheet.create({
     button: {
         marginLeft: 15, marginRight: 15,
         backgroundColor: "#FCA311", borderRadius: 30
+    },
+    lineStyle: {
+        borderWidth: 0.5,
+        borderColor: '#FCA311',
+        marginBottom: "5%",
+        marginTop: "5%",
+        width: 200
     },
 
 });

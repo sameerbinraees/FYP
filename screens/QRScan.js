@@ -21,6 +21,7 @@ export default function QRScan({ navigation }) {
     const [ID, setID] = useState('')
     const [cnic, setCnic] = useState('');
     const [amount, setAmount] = useState('')
+    const [number, SetNumber] = useState('')
     const [scannerID, setScannerID] = useState('')
 
     const [error, setError] = useState(false);
@@ -42,7 +43,7 @@ export default function QRScan({ navigation }) {
 
     useEffect(() => {
         formatData()
-    }, [value, ID, name, email, cnic, scannerID,]);
+    }, [value, ID, name, email, cnic, number, scannerID,]);
 
 
     const sendTransaction = () => {
@@ -62,7 +63,8 @@ export default function QRScan({ navigation }) {
                 body: JSON.stringify({
                     customerID: ID,
                     vendorID: scannerID,
-                    amount: amount
+                    amount: amount,
+                    number: number
                 }),
             })
                 .then(res => res.json())
@@ -102,9 +104,10 @@ export default function QRScan({ navigation }) {
         setStatusType(null)
         if (value) {
             let arr = value.split(":")
-
+            //console.log(arr)
             setID(arr[0])
             setName(arr[1])
+            SetNumber(arr[2])
             setCnic(arr[3])
             setEmail(arr[4])
 
@@ -247,7 +250,7 @@ export default function QRScan({ navigation }) {
 
             <BarCodeScanner
                 onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
-                style={[StyleSheet.absoluteFill, { top: 100 }]}
+                style={[StyleSheet.absoluteFill, { top: 100, marginLeft: 20, marginRight: 20, }]}
             />
             <Modal
                 animationType="fade"
@@ -277,7 +280,7 @@ export default function QRScan({ navigation }) {
                 {(clicked && !error)
                     ?
                     <View style={styles.container}>
-                        <ActivityIndicator size="large" color="#1e6262" />
+                        <ActivityIndicator size="large" color="#14213D" />
                         <Text style={{ marginTop: 20 }}>Validating transaction...</Text>
                     </View>
                     :

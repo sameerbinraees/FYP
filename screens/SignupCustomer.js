@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, TouchableOpacity, ImageBackground, Alert, SafeA
 import { Appbar, Button, TextInput, ActivityIndicator } from 'react-native-paper';
 import { FancyAlert } from 'react-native-expo-fancy-alerts';
 import { Icon } from 'react-native-elements'
+import { ScrollView } from 'react-native-gesture-handler';
 
 
 export default function Signup(props) {
@@ -219,36 +220,32 @@ export default function Signup(props) {
                         <Text style={{ marginTop: 20 }}>Validating the data...</Text>
                     </View>
                     :
-
-                    <View style={{
-                        flex: 1,
-                        justifyContent: "center",
-                    }}>
-
+                    <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}>
                         <View style={{
                             borderRadius: 40,
                             backgroundColor: "#ededed",
-                            margin: "10%",
-
+                            justifyContent: "center",
+                            marginLeft: "10%",
+                            marginRight: "10%",
                         }}>
 
                             <Text style={{ fontSize: 28, textAlign: "center", marginTop: "8%", color: "#14213D" }}>
                                 Signup as
-                    </Text>
+                                </Text>
 
                             <Text style={{ fontSize: 30, fontWeight: "bold", textAlign: "center", marginBottom: "2%", color: "#14213D" }}>
                                 Customer
-                    </Text>
+                                </Text>
 
                             <Text style={{ fontSize: 20, textAlign: "center", color: "grey" }}>
                                 Want to signup as Vendor?
-                    </Text>
+                                </Text>
                             <TouchableOpacity>
                                 <Text style={{ fontSize: 20, textAlign: "center", marginBottom: "6%", color: "grey", fontWeight: 'bold' }}
                                     onPress={() => props.navigation.navigate("SignupVendor")}
                                 >
                                     Click here
-                        </Text>
+                                    </Text>
                             </TouchableOpacity>
 
                             <TextInput
@@ -311,7 +308,7 @@ export default function Signup(props) {
                                 onPress={sendCredentials}
                                 mode="contained">
                                 Sign Up
-                        </Button>
+                                </Button>
 
                             <Text style={{ fontSize: 20, textAlign: "center", marginTop: "3%", color: "grey" }}
                             >Already have an account?</Text>
@@ -320,11 +317,12 @@ export default function Signup(props) {
                                     onPress={() => props.navigation.navigate("Login")}
                                 >
                                     Sign In
-                        </Text>
+                                </Text>
                             </TouchableOpacity>
 
                         </View>
-                    </View>
+
+                    </ScrollView>
                 }
 
             </ImageBackground>
@@ -352,6 +350,7 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
+
     },
     im_bg: {
         width: '100%', height: '100%'

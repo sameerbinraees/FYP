@@ -1,43 +1,94 @@
-import * as React from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { StyleSheet, Text, View, SafeAreaView, Image, ScrollView } from "react-native";
 import { Appbar, Avatar, Button, Card, Title, Paragraph, } from 'react-native-paper';
 
 export default function Promotions({ navigation }) {
-    var promos = [];
 
-    for (let i = 0; i < 5; i++) {
+    const [array, setArray] = useState([])
+    const [updated, setUpdated] = useState(false)
 
-        promos.push(
-            <View key={i} style={{ marginBottom: 15, marginLeft: 15, marginRight: 15,  }}>
-                <Card>
-                    <Card.Content>
-                        <Title>Promotion Name</Title>
-                        <Paragraph>Promotion Details</Paragraph>
-                    </Card.Content>
-                    <Card.Cover source={{ uri: 'https://picsum.photos/700' }} />
-                    <Card.Actions>
-                        <Button style={styles.button}
-                            mode="contained">
-                            Show more
-                        </Button>
-                    </Card.Actions>
-                </Card>
-            </View>
-        )
+    let des, img, exp;
+    let arr = []
+
+
+
+    const fetchPromos = () => {
+
+        fetch("http://192.168.43.145:3000/promotions/")
+            .then(res => res.json())
+            .then(data => {
+                const a = (data.Promotions)
+                //console.log(data.Promotions)
+                for (let i = 0; i < a.length; i++) {
+                    des = (a[i].description)
+                    img = (a[i].image)
+                    exp = (a[i].expired)
+
+                    arr.push({
+                        "description": des, "image": img, "expired": exp,
+                    })
+                    //console.log(arr)
+                }
+                setArray([...arr])
+
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+
     }
+
+    useEffect(() => {
+        fetchPromos()
+    }, [])
+
     return (
-        <SafeAreaView style={{flex:1}}>
-            <Appbar.Header style={{ backgroundColor: "#1e6262", }}>
+        <SafeAreaView style={{ flex: 1 }}>
+            <Appbar.Header style={{ backgroundColor: "#14213D", }}>
                 <Appbar.Action icon="arrow-left" onPress={() => navigation.goBack()} />
                 <Text style={{ color: "#fafaf6", fontSize: 22, fontWeight: "bold" }}>
                     Promotions
                 </Text>
             </Appbar.Header>
 
-            <ScrollView showsVerticalScrollIndicator={true} style={{marginTop: 15}}>
+            <ScrollView showsVerticalScrollIndicator={true} style={{ marginTop: 15 }}>
 
-            {promos}
+                {array.map((item, key) => {
+                    return (
+                        <View key={key} style={{
+                            padding: 10, marginTop: 15, marginBottom: 25,
+                            marginLeft: 25, marginRight: 25, flexDirection: 'row',
+                            backgroundColor: 'white', borderRadius: 10, justifyContent: 'center'
+                        }}>
+                            <View style={{ width: 250, alignItems: "center" }}>
+                                {item.expired
+                                    ?
+                                    <View style={{ alignItems: "center" }}>
+                                        <Text style={[styles.text, { marginBottom: 4, backgroundColor: "yellow" }]}>Expired</Text>
+                                        <View pointerEvents="none" style={{ opacity: 0.3 }}>
+                                            <Image style={{ width: 300, height: 200, borderRadius: 10 }}
+                                                source={{ uri: `${item.image}` }}
+                                            />
+                                            <Paragraph style={styles.text}>{item.description}</Paragraph>
 
+                                        </View>
+                                    </View>
+                                    :
+                                    <View>
+                                        <Image style={{ width: 300, height: 200, borderRadius: 10 }}
+                                            source={{ uri: `${item.image}` }}
+                                        />
+                                        <Paragraph style={styles.text}>{item.description}</Paragraph>
+
+                                    </View>
+                                }
+
+
+                            </View>
+                        </View>
+                    )
+                }
+                )}
             </ScrollView>
         </SafeAreaView>
 
@@ -46,7 +97,9 @@ export default function Promotions({ navigation }) {
 
 
 const styles = StyleSheet.create({
-    button: {
-        backgroundColor: "#1e6262",
-    },
+
+    text: {
+        fontSize: 17, color: '#323232',
+        marginTop: 10, marginBottom: 5, textAlign: "center"
+    }
 });

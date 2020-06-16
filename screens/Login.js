@@ -169,12 +169,13 @@ export default function Login(props) {
           <View style={styles.container}>
             <Image
               style={{
-                width: "100%",
-                height: 120,
+                width: 150,
+                height: 100,
+                marginBottom: 10
               }}
-              source={require('../assets/tax.png')}
+              source={require('../assets/activity-indicator.png')}
             />
-            <ActivityIndicator size="large" color="#14213D" />
+            <ActivityIndicator size="small" color="#14213D" />
             <Text style={{ marginTop: 20 }}>Fetching your data</Text>
           </View>
           :

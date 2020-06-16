@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import { ActivityIndicator } from 'react-native';
 import { AsyncStorage } from 'react-native';
 
 export default function LoadingScreen(props) {
@@ -27,9 +26,7 @@ export default function LoadingScreen(props) {
         detectLogin();
     }, []);
     return (
-        <>{
-            <ActivityIndicator size="large" color="#1e6262" />
-        }
+        <>
         </>
     );
 }

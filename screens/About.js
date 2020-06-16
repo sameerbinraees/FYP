@@ -18,10 +18,24 @@ export default function About({ navigation }) {
             </Appbar.Header>
 
             <ScrollView>
+
                 <View style={styles.container}>
+                    <View style={{ alignItems: "center" }}>
+                        <Image
+                            style={{
+                                width: 50,
+                                height: 50,
+                                marginBottom: 10
+                            }}
+                            source={require('../assets/taxack-icon.png')}
+                        />
+                    </View>
+                    <View style={styles.lineStyle} />
+
                     <Paragraph style={styles.text}>
                         This application is developed by:
-                </Paragraph>
+                    </Paragraph>
+
                     <View style={styles.lineStyle} />
 
                     <List.AccordionGroup>

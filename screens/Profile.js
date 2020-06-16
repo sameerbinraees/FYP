@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { StyleSheet, Text, View, SafeAreaView, Image, ScrollView } from "react-native";
+import { StyleSheet, Text, View, SafeAreaView, Image, ScrollView, ActivityIndicator } from "react-native";
 import { Appbar, Avatar } from 'react-native-paper';
 import { Icon } from 'react-native-elements';
 //import { Avatar } from 'react-native-elements';
@@ -46,31 +46,27 @@ export default function Profile({ navigation }) {
                 <View style={[styles.container, { paddingTop: 70 }]}>
                     <Image
                         style={{
-                            width: "100%",
-                            height: 120,
+                            width: 150,
+                            height: 100,
+                            marginBottom: 10
                         }}
-                        source={require('../assets/tax.png')}
+                        source={require('../assets/activity-indicator.png')}
                     />
-                    <ActivityIndicator size="large" color="#14213D" />
+                    <ActivityIndicator size="small" color="#14213D" />
                     <Text style={{ marginTop: 20 }}>Please wait...</Text>
                 </View>
                 :
 
-                <ScrollView showsVerticalScrollIndicator={false}>
-                    <View style={{ alignItems: "center", flex: 2, justifyContent: 'space-between', padding: 10 }}>
-                    </View>
+                <ScrollView showsVerticalScrollIndicator={false} style={{ marginLeft: 40, marginRight: 40 }}>
+                    <View style={{ alignItems: "center", flex: 1, padding: 20 }} />
 
-
-
-                    <Avatar.Image size={200}
+                    <Avatar.Image size={180}
                         style={styles.profileImage}
                         source={{ uri: 'https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg' }} />
 
-
-
                     <View style={styles.infoContainer}>
                         <Text style={[styles.text, {
-                            fontWeight: "100", fontSize: 32, textAlign: "center",
+                            fontWeight: "100", fontSize: 30, textAlign: "center",
                         }]}>
                             {name}
                         </Text>
@@ -78,8 +74,6 @@ export default function Profile({ navigation }) {
                             Name
                     </Text>
                     </View>
-
-
 
                     <View style={{ alignItems: "center", flex: 2, justifyContent: 'space-between', padding: 10 }}>
                         <Icon name="md-call"
@@ -96,7 +90,6 @@ export default function Profile({ navigation }) {
                         </Text>
                         </View>
                     </View>
-
 
                     <View style={{ alignItems: "center", flex: 2, justifyContent: 'space-between', padding: 10 }}>
                         <Icon name="envelope"
@@ -132,8 +125,6 @@ export default function Profile({ navigation }) {
                 </ScrollView>
             }
         </SafeAreaView>
-
-
     );
 }
 
@@ -257,13 +248,5 @@ const styles = StyleSheet.create({
         alignItems: "flex-start",
         marginBottom: 16
     },
-    activityIndicator: {
-        backgroundColor: "#CABFAB",
-        padding: 4,
-        height: 12,
-        width: 12,
-        borderRadius: 6,
-        marginTop: 3,
-        marginRight: 20
-    }
+
 });
